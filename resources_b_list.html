@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>后台管理系统</title>
+<link rel="icon" href="images/title.png" type="image/ico">
+<meta name="keywords" content="后台管理系统">
+<meta name="description" content="后台管理系统">
+<link rel="stylesheet" href="css/bootstrap.css">
+<link href="css/materialdesignicons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/page.css">
+<link href="css/style.min.css" rel="stylesheet">
+  <style>
+      ul li a i{
+        color: #fff;
+      }
+
+     .nav-item.active{
+       background-color: darkcyan;
+     }
+     .card,.modal-body {
+       color: #4d5259;
+     }
+     tr th,td{
+       text-align: center
+     }
+     tr:hover{
+       background-color: #ecededb5;
+     }
+
+  </style>
+
+</head>
+  
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <aside class="lyear-layout-sidebar">
+      <div id="logo" class="sidebar-header">
+        <a href="index.html" style="background-color: #1b2d57"><img src="images/logo-sidebar.png" title="LightYear" alt="LightYear" /></a>
+      </div>
+      <div class="lyear-layout-sidebar-scroll">
+        <nav class="sidebar-main">
+          <ul class="nav nav-drawer">
+            <li class="nav-item "> <a href="index.html"><i class="mdi mdi-home"></i> 后台首页</a> </li>
+            <li class="nav-item "> <a href="data_board.html"><i class="mdi mdi-yin-yang"></i> 数据看板</a> </li>
+            <li class="nav-item "> <a href="demo_list.html"><i class="mdi mdi-format-align-justify"></i> 区域列表</a> </li>
+            <li class="nav-item active"> <a href="pack_list.html"><i class="mdi mdi-package"></i> 资源管理</a> </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+    <header class="lyear-layout-header">
+      <nav class="navbar navbar-default" style="background-color: #1b2d57">
+        <div class="topbar">
+          <div class="topbar-left">
+            <div class="lyear-aside-toggler">
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+            </div>
+            <span class="navbar-page-title"> 区域列表 </span>
+          </div>
+          <ul class="topbar-right">
+            <li class="dropdown dropdown-profile">
+              <a href="javascript:void(0)" data-toggle="dropdown">
+                <span>后台系统 <span class="caret"></span></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li class="divider"></li>
+                <li> <a href="#"><i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-toolbar clearfix">
+                <div class="input-group" style="padding-left: 25px">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button" style="color: blue">版本号</button>
+                    </span>
+                    <input type="text" class="form-control" placeholder="版本号搜索，如：8.16.102...回车执行" id="SearchVmid" style="width: 350px">
+                  </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th >编号</th>
+                        <th>资源包</th>
+                        <th>时间</th>
+                      </tr>
+                    </thead>
+                    <tbody id="MltableBody">
+                    </tbody>
+                  </table>
+                </div>
+                <div id="page" class="page_div"></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="AddArea" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">添加区域</h4>
+                      </div>
+                      <div class="modal-body">
+                        <form method="post" id="post_area">
+                          <div class="form-group">
+                            <label class="control-label">区域名称：</label>
+                            <input type="text" class="form-control" name="add_area" autocomplete="off", placeholder="区域编号">
+                          </div>
+
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                            <button type="submit" class="btn btn-primary">添 加</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          <div class="modal fade" id="DelArea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <input name="Did" type="hidden">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">提示</h4>
+                    </div>
+                    <input type="hidden" name="aid">
+                    <div class="modal-body">
+                        确定要删除该区域？删除后无法恢复！
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                        <button onclick="delArea()" type="button" class="btn btn-danger">删 除</button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="js/jquery-1.10.2.js"></script>
+<script src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="js/main.min.js"></script>
+<script type="text/javascript" src="js/pageMe.js"></script>
+<script type="text/javascript" src="js/bootstrap-notify.min.js"></script>
+<script type="text/javascript" src="js/lightyear.js"></script>
+<script src="config.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    let currentPage = localStorage.getItem('currentPageMl') || 1;
+    fetchMbLsTableData(currentPage);
+
+    function fetchMbLsTableData(pageNum){
+      $.ajax({
+      url: baseUrl.url + '/api/v1/pack/pack_list',
+      type: 'get',
+      data: {page: pageNum, pageSize: 10, "types": "mobile"},
+      success: function(response){
+        if (response.code === 200) {
+          const pageInfo = response.data.page_info;
+          const currentPage = response.data.page;
+          const totalPages = response.data.total_pages;
+          let tableRows = '';
+          for (let i = 0; i < pageInfo.length; i++){
+            const row =  `
+              <tr>
+                <td>${i+1}</td>
+                <td><a style="color: blue;text-decoration: underline;cursor: pointer">${pageInfo[i].package}</a></td>
+                <td>${pageInfo[i].created_time}</td>
+              </tr>
+            `;
+            tableRows += row;
+          }
+          $('#MltableBody').html(tableRows);
+          $("#page").paging({
+            pageNum: currentPage,
+            totalNum: totalPages,
+            totalList: response.data.total,
+            callback: function (num) {
+              fetchMbLsTableData(num);
+            }
+          });
+          localStorage.setItem('currentPageMl', currentPage);
+        }
+      },
+      error: function(){
+        lightyear.notify('服务连接异常', 'danger', 100);
+      }
+    })
+    };
+  });
+
+</script>
+</body>
+</html>

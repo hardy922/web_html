@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>后台管理系统</title>
+<link rel="icon" href="images/title.png" type="image/ico">
+<meta name="keywords" content="后台管理系统">
+<meta name="description" content="后台管理系统">
+<link rel="stylesheet" href="css/bootstrap.css">
+<link href="css/materialdesignicons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/page.css">
+<link href="css/style.min.css" rel="stylesheet">
+  <style>
+      ul li a i{
+        color: #fff;
+      }
+      .card {
+        color: black;
+      }
+     .nav-item.active{
+       background-color: darkcyan;
+     }
+     .card,.modal-body {
+       color: #4d5259;
+     }
+     tr th,td{
+       text-align: center
+     }
+     tr:hover{
+       background-color: #ecededb5;
+     }
+
+  </style>
+
+</head>
+  
+<body>
+<div class="lyear-layout-web">
+  <div class="lyear-layout-container">
+    <aside class="lyear-layout-sidebar">
+      <div id="logo" class="sidebar-header">
+        <a href="index.html" style="background-color: #1b2d57"><img src="images/logo-sidebar.png" title="LightYear" alt="LightYear" /></a>
+      </div>
+      <div class="lyear-layout-sidebar-scroll">
+        <nav class="sidebar-main">
+          <ul class="nav nav-drawer">
+            <li class="nav-item "> <a href="index.html"><i class="mdi mdi-home"></i> 后台首页</a> </li>
+            <li class="nav-item "> <a href="data_board.html"><i class="mdi mdi-yin-yang"></i> 数据看板</a> </li>
+            <li class="nav-item active"> <a href="demo_list.html"><i class="mdi mdi-format-align-justify"></i> 信息列表</a> </li>
+            <li class="nav-item "> <a href="pack_list.html"><i class="mdi mdi-package"></i> 资源管理</a> </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+    <header class="lyear-layout-header">
+      <nav class="navbar navbar-default" style="background-color: #1b2d57">
+        <div class="topbar">
+          <div class="topbar-left">
+            <div class="lyear-aside-toggler">
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+              <span class="lyear-toggler-bar"></span>
+            </div>
+            <a href="demo_list.html"><span class="navbar-page-title"> 信息列表 </span></a>
+          </div>
+          <ul class="topbar-right">
+            <li class="dropdown dropdown-profile">
+              <a href="javascript:void(0)" data-toggle="dropdown">
+                <span>后台系统 <span class="caret"></span></span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li class="divider"></li>
+                <li> <a href="#"><i class="mdi mdi-logout-variant"></i> 退出登录</a> </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <main class="lyear-layout-content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-toolbar clearfix">
+                <div style="display: inline-flex">
+                  <div class="toolbar-btn-action">
+                    <a class="btn btn-success m-r-5" data-toggle="modal" data-target="#AddVmInfo"><i class="mdi mdi-check"></i> 新增</a>
+                  </div>
+                  <div class="input-group" style="padding-left: 200px">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">信息</button>
+                    </span>
+                    <input type="text" class="form-control" placeholder="vmid搜索...回车执行" id="SearchVmid" style="width: 180px">
+                  </div>
+                  <div class="input-group" style="padding-left: 80px">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">标记</button>
+                    </span>
+                    <select class="form-control" id="label_res" name="keyword" style="width: 180px">
+                      <option value="2">请选择</option>
+                      <option value="1">已标记</option>
+                      <option value="0">未标记</option>
+                      <option value="all">全部</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>编号</th>
+                        <th>信息</th>
+                        <th>信息</th>
+                        <th>IP</th>
+                        <th>标记</th>
+                        <th>类型</th>
+                        <th>管理状态</th>
+                        <th>系统状态</th>
+                        <th>操作</th>
+                      </tr>
+                    </thead>
+                    <tbody id="vm_body">
+                    </tbody>
+                  </table>
+                </div>
+                <div id="page" class="page_div"></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="AddVmInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">添加信息</h4>
+                      </div>
+                      <div class="modal-body">
+                        <form method="post" id="post_vm_info">
+                          <div class="form-group">
+                            <label class="control-label">信息名称：</label>
+                            <input type="number" class="form-control" name="add_vm" autocomplete="off", placeholder="信息编号">
+                          </div>
+                          <div class="form-group">
+                            <label class="control-label">信息IP：</label>
+                            <input type="text" class="form-control" name="add_ip" autocomplete="off", placeholder="信息IP">
+                          </div>
+                          <div class="form-group">
+                            <label class="control-label">标记状态：</label>
+                            <select class="form-control"  name="label_status">
+                              <option value="1">标记</option>
+                              <option value="0">不标记</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label class="control-label">端侧类型：</label>
+                            <select class="form-control"  name="client_type">
+                              <option value="端游">端游</option>
+                              <option value="手游">手游</option>
+                            </select>
+                          </div>
+
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                            <button type="submit" class="btn btn-primary">添 加</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          <div class="modal fade" id="EditVm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" >编辑信息</h4>
+                      </div>
+                      <div class="modal-body">
+                        <form method="post" id="put_vm">
+                          <input type="hidden" name="up_id">
+                          <div class="form-group">
+                            <label class="control-label">信息名称：</label>
+                            <input type="text" class="form-control" name="update_vm" autocomplete="off", placeholder="信息编号">
+                          </div>
+                          <div class="form-group">
+                            <label class="control-label">信息IP：</label>
+                            <input type="text" class="form-control" name="update_ip" autocomplete="off", placeholder="信息IP">
+                          </div>
+                          <div class="form-group">
+                            <label class="control-label">标记状态：</label>
+                            <select class="form-control"  name="up_label_status">
+                              <option value="1">标记</option>
+                              <option value="0">不标记</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label class="control-label">端侧类型：</label>
+                            <select class="form-control"  name="up_client_type">
+                              <option value="端游">端游</option>
+                              <option value="手游">手游</option>
+                            </select>
+                          </div>
+
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                            <button type="button" onclick="UpdateVmInfo()" class="btn btn-info">更 新</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          <div class="modal fade" id="DelVm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <input name="Did" type="hidden">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">提示</h4>
+                    </div>
+                    <input type="hidden" name="D_id">
+                    <div class="modal-body">
+                        确定要删除该信息？删除后无法恢复！
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+                        <button onclick="DelVmInfo()" type="button" class="btn btn-danger">删 除</button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+        
+        </div>
+      </div>
+      
+    </main>
+  </div>
+</div>
+
+<script src="js/jquery-1.10.2.js"></script>
+<script src="js/bootstrap.js"></script>
+<script type="text/javascript" src="js/perfect-scrollbar.min.js"></script>
+<script type="text/javascript" src="js/main.min.js"></script>
+<script type="text/javascript" src="js/pageMe.js"></script>
+<script type="text/javascript" src="js/bootstrap-notify.min.js"></script>
+<script type="text/javascript" src="js/lightyear.js"></script>
+<script src="config.js"></script>
+
+<script type="text/javascript">
+  $(window).on('beforeunload', function(){
+    localStorage.removeItem('currentPageVm');
+  });
+  $(document).ready(function() {
+    let currentPage = localStorage.getItem('currentPageVm') || 1;
+    fetchVmPage(currentPage);
+    function fetchVmPage(pageNum){
+      var areaId = new URLSearchParams(window.location.search).get('id');
+      $.ajax({
+        url: baseUrl.url + '/api/v1/area_infos',
+        type: 'get',
+        data: {"area_id": areaId, "page": pageNum, "page_size": 10},
+        success: function (res){
+          var currentPage = res.data.page;
+          var totalPages = res.data.total_pages;
+          if (res.code === 200){
+            var tableHtml = '';
+            $.each(res.data.page_info, function (index, item){
+              var labelHtml = ';'
+              if (item.label === "1"){
+                labelHtml = '<td><font class="text-success">&#x1F600;</font></td>';
+              }else {
+                labelHtml = '<td>' + item.label + '</td>';
+              }
+              tableHtml += '<tr>' + '<td>' + item.id + '</td>' +
+              '<td>' + item.area_id + '</td>' +
+              '<td>' + item.vmid + '</td>' +
+              '<td>' + item.ip + '</td>' +
+               labelHtml +
+              '<td>' + item.area_type + '</td>' +
+              '<td>' + item.mgr_state + '</td>' +
+              '<td>' + item.os_state + '</td>' +
+              '<td style="text-align: center">' +
+              '<button type="button" id="edit_vm" class="btn-sm btn btn-info" style="margin-right: 5px" data-toggle="modal" data-target="#EditVm">编辑</button>' +
+              '<button type="button" id="del_vm_evt" class="btn-sm btn btn-danger" style="margin-left: 1px" data-toggle="modal" data-target="#DelVm">删除</button>' +
+              '</td>' +
+              '</tr>';
+            });
+            $("#vm_body").html(tableHtml);
+            $("#page").paging({
+              pageNum: currentPage,
+              totalNum: totalPages,
+              totalList: res.data.total,
+              callback: function (num) {
+                fetchVmPage(num);
+              }
+            });
+            localStorage.setItem('currentPageVm', currentPage)
+          }
+        },
+        error: function (err){
+          lightyear.notify('服务异常', 'danger', 100)
+        }
+      });
+    }
+
+    $("#SearchVmid").on('keydown', function (event){
+      if (event.keyCode === 13){
+        var id = $(this).val();
+        console.log(123, id)
+        if (id === ""){
+          location.reload();
+        }else {
+          $.ajax({
+            url: baseUrl.url + '/api/v1/vmid/' + id,
+            type: 'get',
+            success: function (res){
+              if (res.code === 200){
+                $("#vm_body").empty();
+                $("#page").hide();
+                var searchHtml = '';
+                $.each(res.data, function (index, item){
+                  var labelHtml = '';
+                  if (item.label === '1'){
+                    labelHtml = '<td><font class="text-success">&#x1F600;</font></td>';
+                  }else {
+                    labelHtml = '<td>' + item.label + '</td>';
+                  }
+                  searchHtml += '<tr>' + '<td>' + item.id + '</td>' +
+                  '<td>' + item.area_id + '</td>' +
+                  '<td>' + item.vmid + '</td>' +
+                  '<td>' + item.ip + '</td>' +
+                   labelHtml +
+                  '<td>' + item.area_type + '</td>' +
+                  '<td>' + item.mgr_state + '</td>' +
+                  '<td>' + item.os_state + '</td>' +
+                  '<td style="text-align: center">' +
+                  '<button type="button" id="edit_vm" class="btn-sm btn btn-info" style="margin-right: 5px" data-toggle="modal" data-target="#EditVm">编辑</button>' +
+                  '<button type="button" id="del_vm_evt" class="btn-sm btn btn-danger" style="margin-left: 1px" data-toggle="modal" data-target="#DelVm">删除</button>' +
+                  '</td>' +
+                  '</tr>';
+                });
+                $("#vm_body").html(searchHtml);
+              }
+            },
+            error: function () {
+              lightyear.notify('未找到数据', 'danger', 100)
+            }
+          });
+
+        }
+      };
+    });
+
+    $("#label_res").change(function () {
+      var selectedValue = $(this).val();
+      var aid = $('#vm_body tr').eq(0).find('td').eq(1).text();
+      if (aid === ""){
+        lightyear.notify('未找到数据', 'danger', 100);
+      }else if (selectedValue === "all"){
+        location.reload();
+      } else{
+        if (selectedValue === "0" || selectedValue === "1"){
+          $.ajax({
+            url: baseUrl.url + '/api/v1/area_vmid?id=' + aid + '&label=' + selectedValue,
+            type: 'get',
+            success: function (res) {
+              if (res.code === 200){
+                $("#vm_body").empty();
+                $("#page").hide();
+                var selectHtml = '';
+                $.each(res.data, function (index, item){
+                  var labelHtml = '';
+                  if (item.label === '1'){
+                    labelHtml = '<td><font class="text-success">&#x1F600;</font></td>';
+                  } else {
+                    labelHtml = '<td>' + item.label + '</td>';
+                  }
+                  selectHtml += '<tr>' + '<td>' + item.id + '</td>' +
+                  '<td>' + item.area_number + '</td>' +
+                  '<td>' + item.vmid + '</td>' +
+                  '<td>' + item.ip + '</td>' +
+                   labelHtml +
+                  '<td>' + item.area_type + '</td>' +
+                  '<td>' + item.mgr_state + '</td>' +
+                  '<td>' + item.os_state + '</td>' +
+                  '<td style="text-align: center">' +
+                  '<button type="button" id="edit_vm" class="btn-sm btn btn-info" style="margin-right: 5px" data-toggle="modal" data-target="#EditVm">编辑</button>' +
+                  '<button type="button" id="del_vm_evt" class="btn-sm btn btn-danger" style="margin-left: 1px" data-toggle="modal" data-target="#DelVm">删除</button>' +
+                  '</td>' +
+                  '</tr>';
+                });
+                $("#vm_body").html(selectHtml);
+            }
+          },
+          error: function (){
+            lightyear.notify('查询异常', 'danger', 100)
+          }
+        });
+        }
+      }
+    });
+  });
+
+  $(function () {
+    $("#post_vm_info").submit(function (e){
+      e.preventDefault();
+      var areaId = new URLSearchParams(window.location.search).get('id');
+      var vm = $('input[name="add_vm"]').val();
+      var ip = $('input[name="add_ip"]').val();
+      var labelStatus = $('select[name="label_status"]').val();
+      var clientType = $('select[name="client_type"]').val();
+      if (vm === "" || ip === ""){
+        lightyear.notify('信息输入不完整', 'danger', 100)
+      }else {
+        $.ajax({
+          url: baseUrl.url + '/api/v1/vm_info',
+          type: 'post',
+          data: JSON.stringify({"area_id": parseInt(areaId), "vmid": vm, "ip": ip, "label": labelStatus, "area_type": clientType}),
+          contentType: 'application/json; charset=utf-8',
+          success: function(res){
+            if (res.code === 200){
+              lightyear.notify('添加成功', 'success', 100);
+              location.reload();
+            }
+          },
+          error: function(jqXHR, textStatus, errorTh){
+            lightyear.notify('添加失败', 'danger', 100)
+          }
+        })
+      }
+    });
+  });
+
+  $(document).on('click', '#edit_vm', function (){
+    var row = $(this).closest('tr')
+    var id = row.find('td:nth-child(1)').text();
+    var vm = row.find('td:nth-child(3)').text();
+    var ip = row.find('td:nth-child(4)').text();
+    var label = row.find('td:nth-child(5)').text();
+    var ty = row.find('td:nth-child(6)').text();
+    var labelStatus
+    if (label === String.fromCodePoint(0x1F600)){
+      labelStatus = '1';
+    }else {
+      labelStatus = label;
+    }
+    $("input[name='up_id']").val(id);
+    $("input[name='update_vm']").val(vm);
+    $("input[name='update_ip']").val(ip);
+    $("select[name='up_label_status']").val(labelStatus);
+    $("select[name='up_client_type']").val(ty);
+  });
+
+  function UpdateVmInfo(){
+    let id = $("input[name='up_id']").val();
+    let vm = $("input[name='update_vm']").val();
+    let ip = $("input[name='update_ip']").val();
+    let label = $("select[name='up_label_status']").val();
+    let ty = $("select[name='up_client_type']").val();
+    console.log(777, id, vm, ip, label, ty)
+    if (vm === "" || vm === ""){
+      lightyear.notify('信息输入不完整', 'danger', 100);
+    }else {
+      $.ajax({
+        url: baseUrl.url + '/api/v1/vm_info',
+        type: 'put',
+        data: JSON.stringify({"id": parseInt(id), "vmid": vm, "ip": ip, "label": label, "area_type": ty, "mgr_state": "允许调试", "os_state": "健康可用"}),
+        contentType: 'application/json; charset=utf-8',
+        success: function(res){
+          console.log(999, res)
+          if (res.code === 200){
+            lightyear.notify('修改成功', 'success', 100);
+            setTimeout(function(){
+              location.reload();
+            }, 100);
+          }
+        },
+        error: function(jqXHR, textStatus, error){
+          lightyear.notify('修改失败', 'danger', 100)
+        }
+      });
+    }
+  }
+
+  $(document).on('click', '#del_vm_evt', function (){
+    var row = $(this).closest('tr')
+    var id = row.find('td:nth-child(1)').text();
+    $("input[name='D_id']").val(id);
+  });
+
+  function DelVmInfo(){
+    let id = $("input[name='D_id']").val();
+    $.ajax({
+      url: baseUrl.url + '/api/v1/vmid/' + id,
+      type: 'delete',
+      success: function (res){
+        if (res.code === 200) {
+          lightyear.notify('删除成功', 'success', 100)
+          location.reload();
+        }
+      },
+      error: function (){
+        lightyear.notify('删除失败', 'danger', 100)
+      }
+    });
+  }
+</script>
+</body>
+</html>
